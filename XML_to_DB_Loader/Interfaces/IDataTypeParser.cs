@@ -18,6 +18,6 @@ namespace XML_To_DB_Loader.Interfaces
         /// </summary>
         /// <param name="file">file to parse</param>
         /// <returns>Model Type</returns>
-        Type PrseXmlFileNameToModelType(FileInfo file);
+        Type PrseFileNameToModelType(FileInfo file);
     }
 }
