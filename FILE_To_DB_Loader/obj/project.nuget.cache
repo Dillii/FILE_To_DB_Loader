@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "BCQIh9FvtN9nKa+YDjmePQWI/TuvRnlHl4Ml6SduTtYNTNKaPUobHEKVAHXI3vXzqrNs5PU+yr7epoH1awkc2g==",
+  "success": true,
+  "projectFilePath": "G:\\mihan\\Работа\\FAS\\GIT-Repositories\\FILE_TO_DB_Loader\\FILE_to_DB_Loader\\FILE_To_DB_Loader.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\MIHAN\\.nuget\\packages\\npgsql\\6.0.3\\npgsql.6.0.3.nupkg.sha512",
+    "C:\\Users\\MIHAN\\.nuget\\packages\\system.diagnostics.diagnosticsource\\6.0.0\\system.diagnostics.diagnosticsource.6.0.0.nupkg.sha512",
+    "C:\\Users\\MIHAN\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
+    "C:\\Users\\MIHAN\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
