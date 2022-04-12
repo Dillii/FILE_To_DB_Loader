@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
@@ -104,7 +104,7 @@ namespace FILE_To_DB_Loader.DBManagers
             if (dataList.Count == 0) return;
             using (var connection = GetConnection())
             {
-                Type dataType = dataList[0].GetType();
+                Type dataType = typeof(T);
                 try
                 {
                     var properties = dataType.GetProperties();
@@ -114,8 +114,8 @@ namespace FILE_To_DB_Loader.DBManagers
                         using var command = connection.CreateCommand();
                         command.CommandText = $"INSERT INTO \"{_modelTypeToTableNameConvertor.ConvertModelNameToTableName(dataType.Name)}\" " +
                             $"({ GenerateColumnsStringByModelType(properties)})" +
-                            $" VALUES ({GenerateValuesForInsertCommand(data, properties)})" +
-                            $" ON CONFLICT (\"{properties[0].Name.ToUpper()}\") DO UPDATE SET {GenerateSetValuesForUpdateCommand(data, properties, properties[0])};";
+                            $" VALUES ({GenerateValuesForInsertCommand(data)})" +
+                            $" ON CONFLICT (\"{properties[0].Name.ToUpper()}\") DO UPDATE SET {GenerateSetValuesForUpdateCommand(data, properties[0])};";
                         command.ExecuteNonQuery();
                     }
                 }
@@ -126,11 +126,17 @@ namespace FILE_To_DB_Loader.DBManagers
                 }
             }
         }
-
-        protected string GenerateSetValuesForUpdateCommand<T>(T dataItem, PropertyInfo[] properties, PropertyInfo keyProperty)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dataItem"></param>
+        /// <param name="keyProperty">matching key - ignored in update command</param>
+        /// <returns></returns>
+        protected string GenerateSetValuesForUpdateCommand<T>(T dataItem, PropertyInfo keyProperty)
         {
             var values = "";
-            foreach (var property in properties)
+            foreach (var property in typeof(T).GetProperties())
             {
                 if (property.Name != keyProperty.Name)
                     values += "\"" + property.Name.ToUpper() + $"\" = {ConvertPropertyByValueType(property, dataItem)}" + ", ";
@@ -138,10 +144,10 @@ namespace FILE_To_DB_Loader.DBManagers
             values = values.Substring(0, values.Length - 2);
             return values;
         }
-        protected string GenerateValuesForInsertCommand<T>(T dataItem, PropertyInfo[] properties)
+        protected string GenerateValuesForInsertCommand<T>(T dataItem)
         {
             var values = "";
-            foreach (var property in properties)
+            foreach (var property in typeof(T).GetProperties())
             {
                 values += ConvertPropertyByValueType(property, dataItem) + ", ";
             }
@@ -159,15 +165,21 @@ namespace FILE_To_DB_Loader.DBManagers
             foreach (var property in properties)
             {
                 result += "\"" + property.Name.ToUpper() + "\"" + ", ";
-                //result += property.Name.ToUpper() + ", ";
             }
             result = result.Substring(0, result.Length - 2);
 
             return result;
         }
-        protected NpgsqlTypes.NpgsqlDbType GetNpgsqlDbType(TypeInfo type)
+        /// <summary>
+        /// Converts property type to DB type 
+        /// 
+        /// If you need more types just inherit and override
+        /// </summary>
+        /// <param name="type">Model type</param>
+        /// <returns></returns>
+        protected virtual NpgsqlTypes.NpgsqlDbType GetNpgsqlDbType(TypeInfo type)
         {
-            if (type == null) throw new Exception("Cannot recognize PostgreSQL DB type");
+            if (type == null) throw new Exception("Cannot convert null to PostgreSQL DB type");
             string typeName = type.GenericTypeArguments.Length > 0 ? type.GenericTypeArguments[0].Name : type.Name;
 
             switch (typeName)
