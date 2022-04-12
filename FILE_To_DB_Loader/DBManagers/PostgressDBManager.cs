@@ -127,7 +127,7 @@ namespace FILE_To_DB_Loader.DBManagers
             }
         }
 
-        private string GenerateSetValuesForUpdateCommand<T>(T dataItem, PropertyInfo[] properties, PropertyInfo keyProperty)
+        protected string GenerateSetValuesForUpdateCommand<T>(T dataItem, PropertyInfo[] properties, PropertyInfo keyProperty)
         {
             var values = "";
             foreach (var property in properties)
@@ -138,7 +138,7 @@ namespace FILE_To_DB_Loader.DBManagers
             values = values.Substring(0, values.Length - 2);
             return values;
         }
-        private string GenerateValuesForInsertCommand<T>(T dataItem, PropertyInfo[] properties)
+        protected string GenerateValuesForInsertCommand<T>(T dataItem, PropertyInfo[] properties)
         {
             var values = "";
             foreach (var property in properties)
@@ -148,12 +148,12 @@ namespace FILE_To_DB_Loader.DBManagers
             values = values.Substring(0, values.Length - 2);
             return values;
         }
-        private string ConvertPropertyByValueType<T>(PropertyInfo property, T dataItem)
+        protected string ConvertPropertyByValueType<T>(PropertyInfo property, T dataItem)
         {
             if (property.GetValue(dataItem) == null) return "NULL";
             return "\'" + (property.PropertyType == typeof(DateTime) ? ((DateTime)property.GetValue(dataItem)).ToString(_dateFormat) : property.GetValue(dataItem).ToString()) + "\'";
         }
-        private string GenerateColumnsStringByModelType(PropertyInfo[] properties)
+        protected string GenerateColumnsStringByModelType(PropertyInfo[] properties)
         {
             string result = "";
             foreach (var property in properties)
@@ -165,7 +165,7 @@ namespace FILE_To_DB_Loader.DBManagers
 
             return result;
         }
-        private NpgsqlTypes.NpgsqlDbType GetNpgsqlDbType(TypeInfo type)
+        protected NpgsqlTypes.NpgsqlDbType GetNpgsqlDbType(TypeInfo type)
         {
             if (type == null) throw new Exception("Cannot recognize PostgreSQL DB type");
             string typeName = type.GenericTypeArguments.Length > 0 ? type.GenericTypeArguments[0].Name : type.Name;
@@ -191,7 +191,7 @@ namespace FILE_To_DB_Loader.DBManagers
             throw new Exception($"Unknown Type {type.Name}");
         }
 
-        private NpgsqlConnection GetConnection()
+        protected NpgsqlConnection GetConnection()
         {
             var connection = new NpgsqlConnection(_connectionString);
             connection.Open();
