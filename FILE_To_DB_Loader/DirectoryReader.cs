@@ -52,9 +52,12 @@ namespace FILE_To_DB_Loader
                 string[] files = Directory.GetFiles(directoryPath);
                 if (files.Length > 0)
                 {
-                    foreach (var file in files)
+                    lock (_locker)
                     {
-                        if (!_blackList.Contains(file)) return file;
+                        foreach (var file in files)
+                        {
+                            if (!_blackList.Contains(file)) return file;
+                        }
                     }
                 }
                 string[] directories = Directory.GetDirectories(directoryPath);
