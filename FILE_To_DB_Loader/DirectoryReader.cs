@@ -21,6 +21,9 @@ namespace FILE_To_DB_Loader
         private int _maxItemsAwatingToLoad;
 
         private readonly string _fileExtension;
+        /// <summary>
+        /// Root dirrectory of content files
+        /// </summary>
         public string DirectoryPath { get; }
         private List<string> _blackList = new List<string>();
         private readonly Task[] _threadsPool;
