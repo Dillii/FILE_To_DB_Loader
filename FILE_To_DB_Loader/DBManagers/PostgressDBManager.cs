@@ -127,11 +127,12 @@ namespace FILE_To_DB_Loader.DBManagers
             }
         }
         /// <summary>
-        /// 
+        /// Reads all properties in type T and makes update part of insert/update command 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">model Type that should compare to table name in properties(column) names without case</typeparam>
         /// <param name="dataItem"></param>
         /// <param name="keyProperty">matching key - ignored in update command</param>
+        /// <exception cref="ArgumentException"></exception>
         /// <returns></returns>
         protected string GenerateSetValuesForUpdateCommand<T>(T dataItem, PropertyInfo keyProperty)
         {
@@ -141,9 +142,16 @@ namespace FILE_To_DB_Loader.DBManagers
                 if (property.Name != keyProperty.Name)
                     values += "\"" + property.Name.ToUpper() + $"\" = {ConvertPropertyByValueType(property, dataItem)}" + ", ";
             }
+            if (values.Length < 2) throw new ArgumentException("Cant find any properties in type " + typeof(T).Name);
             values = values.Substring(0, values.Length - 2);
             return values;
         }
+        /// <summary>
+        /// Reads all properties in type T and makes insert part of insert/update command 
+        /// </summary>
+        /// <typeparam name="T">model Type that should compare to table name in properties(column) names without case</typeparam>
+        /// <param name="dataItem">matching key - ignored in update command</param>
+        /// <returns></returns>
         protected string GenerateValuesForInsertCommand<T>(T dataItem)
         {
             var values = "";
@@ -151,6 +159,7 @@ namespace FILE_To_DB_Loader.DBManagers
             {
                 values += ConvertPropertyByValueType(property, dataItem) + ", ";
             }
+            if (values.Length < 2) throw new ArgumentException("Cant find any properties in type " + typeof(T).Name);
             values = values.Substring(0, values.Length - 2);
             return values;
         }
