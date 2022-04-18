@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -21,7 +21,7 @@ namespace FILE_To_DB_Loader
         private int _maxItemsAwatingToLoad;
 
         private readonly string _fileExtension;
-        private string _directoryPath;
+        public string DirectoryPath { get; }
         private List<string> _blackList = new List<string>();
         private readonly Task[] _threadsPool;
         public bool IsCanceled { get; private set; } = true;
@@ -41,7 +41,7 @@ namespace FILE_To_DB_Loader
             _fileExtension = fileExtension;
             _maxItemsAwatingToLoad = maxItemsAwatingToLoad;
             _datatypeParser = datatypeParser;
-            _directoryPath = directoryPath;
+            DirectoryPath = directoryPath;
             _threadsPool = new Task[threadsCount];
         }
 
@@ -126,7 +126,7 @@ namespace FILE_To_DB_Loader
                 string file = null;
                 lock (_locker)
                 {
-                    file = GetNextFile(_directoryPath);
+                    file = GetNextFile(DirectoryPath);
                     if (file == null)
                     {
                         Console.WriteLine($"End of reading.");
