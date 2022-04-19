@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Text;
 using System.Xml;
 using FILE_To_DB_Loader.Interfaces;
@@ -22,8 +23,9 @@ namespace FILE_To_DB_Loader.DataReaders
         /// <returns></returns>
         public IList<T> ReadDataFromFile<T>(string pathToFile) where T : new()
         {
+            if (!File.Exists(pathToFile)) return null; // file was already loaded in other thread or some joker deleted it in right time
             using (var reader = XmlReader.Create(pathToFile))
-            {
+            {   
                 reader.MoveToContent();
 
                 var propertyList = typeof(T).GetProperties();
