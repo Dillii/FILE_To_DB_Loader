@@ -59,7 +59,11 @@ namespace FILE_To_DB_Loader
                     {
                         foreach (var file in files)
                         {
-                            if (!_blackList.Contains(file)) return file;
+                            if (!_blackList.Contains(file) && file != null) 
+                            {
+                                _blackList.Add(file);
+                                return file;
+                            }
                         }
                     }
                 }
@@ -136,11 +140,11 @@ namespace FILE_To_DB_Loader
                         return;
                     }
                     Console.WriteLine($"Start reading {file}...");
-                    if (file != null) _blackList.Add(file);
+                    
                 }
                 var fileInfo = new FileInfo(file);
                 var dataType = _datatypeParser.ParseFileNameToModelType(fileInfo);
-                if (fileInfo.Extension.ToUpper() != _fileExtension || dataType == null) return; // левый файл просто игнорим
+                if (fileInfo.Extension.ToUpper() != _fileExtension || dataType == null) return; // ignoring other extensions
 
                 try
                 {
@@ -150,10 +154,12 @@ namespace FILE_To_DB_Loader
                     MethodInfo miConstructed = mi.MakeGenericMethod(dataType);
                     object[] args = { file };
                     var result = miConstructed.Invoke(_fileDataReader, args);
-
-                    var dataList = ((IList)result).Cast<object>().ToList();
-                    var dataWithPath = new Tuple<string, List<object>>(file, dataList);
-                    DataQueue.Instance.DataReadyToLoadInDb.Enqueue(dataWithPath);
+                    if (result != null) // load in list only if able to read file
+                    {
+                        var dataList = ((IList)result).Cast<object>().ToList();
+                        var dataWithPath = new Tuple<string, List<object>>(file, dataList);
+                        DataQueue.Instance.DataReadyToLoadInDb.Enqueue(dataWithPath);
+                    }
                 }
                 catch (Exception e)
                 {
