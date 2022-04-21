@@ -17,11 +17,11 @@ namespace FILE_To_DB_Loader.DBManagers
         private string _dateFormat;
 
         /// <summary>
-        /// 
+        /// Constructor
         /// </summary>
-        /// <param name="connectionString"></param>
-        /// <param name="modelTypeToTableNameConvertor"></param>
-        /// <param name="dateFormat"></param>
+        /// <param name="connectionString">Full connection string</param>
+        /// <param name="modelTypeToTableNameConvertor">convertor to compare model names to DB table names</param>
+        /// <param name="dateFormat">date format - need to be passed as a valid date/timespan with/without time zone in DB</param>
         public PostgressDBManager(string connectionString, IModelTypeToTableNameConvertor modelTypeToTableNameConvertor, string dateFormat = "yyyy-MM-dd HH:mm:ss.fff")
         {
             _modelTypeToTableNameConvertor = modelTypeToTableNameConvertor;
@@ -37,10 +37,12 @@ namespace FILE_To_DB_Loader.DBManagers
         /// <param name="password">Password</param>
         /// <param name="port">Port</param>
         /// <param name="sslMode">SSLMode</param>
+        /// <param name="timeOut">Timeout</param>
+        /// <param name="commandTimeOut">Command timeout</param>
         /// <param name="modelTypeToTableNameConvertor">convertor to compare model names to DB table names</param>
         /// <param name="dateFormat">date format - need to be passed as a valid date/timespan with/without time zone in DB</param>
-        public PostgressDBManager(string host, string dBname, string user, string password, string port, string sslMode, IModelTypeToTableNameConvertor modelTypeToTableNameConvertor, string dateFormat = "yyyy-MM-dd HH:mm:ss.fff")
-            : this(string.Format("Server={0};Username={1};Database={2};Port={3};Password={4};SSLMode={5}", host, user, dBname, dBname, port, password, sslMode), modelTypeToTableNameConvertor, dateFormat)
+        public PostgressDBManager(string host, string dBname, string user, string password, string port, string sslMode, int timeOut, int commandTimeOut, IModelTypeToTableNameConvertor modelTypeToTableNameConvertor, string dateFormat = "yyyy-MM-dd HH:mm:ss.fff")
+            : this(string.Format("Server={0};Username={1};Database={2};Port={3};Password={4};SSLMode={5};Timeout={timeOut};CommandTimeout={commandTimeOut}", host, user, dBname, dBname, port, password, sslMode, timeOut, commandTimeOut), modelTypeToTableNameConvertor, dateFormat)
         {
         }
         /// <summary>
