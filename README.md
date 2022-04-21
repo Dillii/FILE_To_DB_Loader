@@ -1,4 +1,4 @@
-# XML_TO_DB_Loader - .NET library for fast tranclate data from file to Data Base
+# XML_TO_DB_Loader - .NET library for fast load data from file to Data Base
 
 What is XML_TO_DB_Loader?
 This is simple library, that help load big amount of attributes orientated XML files.
